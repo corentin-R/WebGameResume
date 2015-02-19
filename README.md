@@ -15,6 +15,6 @@ A small html5 plateformer game made with [Phaser](http://phaser.io/).
 ## How to use it
 
 * Clone the repo
-* Run the script `script/dlPhaser.sh`
+* Run the script `dlPhaser.sh`
 * Open `index.html` in a browser, you should see the Phaser logo (800x600)
-* Congratulate yourself, you'ra a genious!
+* Congratulate yourself, you're a genious!
