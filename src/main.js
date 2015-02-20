@@ -1,14 +1,15 @@
 
 var firstheight = window.innerHeight;
 var firstwidth = window.innerWidth;
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'ld29', { preload: preload, create: create, update: update }, false, false);
+
 
 function preload() {
 
     game.load.image('sky', 'res/img/sky.png');
     game.load.image('ground', 'res/img/platform.png');
     game.load.spritesheet('dude', 'res/img/dude.png', 32, 48);
-
+    game.load.spritesheet('player1', 'res/img/hero.png', 16, 16);
 }
 
 var player;
@@ -18,6 +19,7 @@ var jumpButton;
 
 
 function create() {
+
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -48,7 +50,11 @@ function create() {
     ledge.body.immovable = true;
 
     // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'dude');
+    player = game.add.sprite(32, game.world.height - 150, 'player1');
+    player.scale.setTo(4,4);
+
+    //set anchor in the middle to flip in the middle
+    player.anchor.setTo(.5, 1);
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -59,12 +65,16 @@ function create() {
     player.body.collideWorldBounds = true;
 
     //  Our two animations, walking left and right.
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+    player.animations.add('run', [6, 7, 8, 9, 10], 10, true);
+    player.animations.add('idle', [0, 1, 2], 2, true);
+    player.animations.add('jump', [12, 13, 14], 4, true);
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+
+
     
 }
 
@@ -77,6 +87,10 @@ function update() {
     player.body.velocity.x = 0;
 
     playerController();
+
+    //game.debug.body(player);
+
+
 }
 
 function playerController() {
@@ -86,26 +100,35 @@ function playerController() {
         //  Move to the left
         player.body.velocity.x = -200;
 
-        player.animations.play('left');
+        player.animations.play('run');
+        if(player.scale.x>0){
+        	player.scale.x=-player.scale.x;
+        }
+
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = 200;
 
-        player.animations.play('right');
+        player.animations.play('run');
+        if(player.scale.x<0){
+        	player.scale.x=-player.scale.x;
+        }
     }
     else
     {
         //  Stand still
-        player.animations.stop();
-
-        player.frame = 4;
+        player.animations.play('idle');
     }
     
     //  Allow the player to jump if they are touching the ground.
     if (jumpButton.isDown && player.body.touching.down)
     {
         player.body.velocity.y = -550;
+    }
+
+    if(!player.body.touching.down){
+    	player.animations.play('jump');
     }
 }
