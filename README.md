@@ -6,7 +6,7 @@
 
 A small html5 plateformer game made with [Phaser](http://phaser.io/).
 
-## Contols
+## Controls
 
 * On desktop devices
 	* Arrows key to move
@@ -16,5 +16,12 @@ A small html5 plateformer game made with [Phaser](http://phaser.io/).
 
 * Clone the repo
 * Run the script `dlPhaser.sh`
-* Open `index.html` in a browser, you should see the Phaser logo (800x600)
+* Open `index.html` in a browser
 * Congratulate yourself, you're a genious!
+
+
+## Credits
+
+### Graphics assets
+
+* [Jason-Em](http://opengameart.org/users/jason-em)
