@@ -19,7 +19,7 @@ function create() {
 
 	//adaptative screen
 	//	  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-  	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+ game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 
     //  We're going to be using physics, so enable the Arcade Physics system
@@ -70,6 +70,9 @@ function create() {
     player.animations.add('idle', [0, 1, 2], 2, true);
     player.animations.add('jump', [12, 13, 14], 4, false);
     player.animations.add('shoot', [24, 25, 26], 8, false);
+    player.animations.add('jump_up', [12], 4, false);
+    player.animations.add('jump_down', [13], 4, false);
+    player.animations.add('jump_fall', [14], 4, false);
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -97,40 +100,60 @@ function playerController() {
 
     if (cursors.left.isDown)
     {
-        //  Move to the left
-        player.body.velocity.x = -200;
+            //  Move to the left
+            player.body.velocity.x = -200;
 
-        player.animations.play('run');
-        if(player.scale.x>0){
-        	player.scale.x=-player.scale.x;
-        }
-
-    }
-    else if (cursors.right.isDown)
-    {
+            player.animations.play('run');
+            if(player.scale.x>0){
+               player.scale.x=-player.scale.x;
+           }
+       }
+       else if (cursors.right.isDown)
+       {
         //  Move to the right
         player.body.velocity.x = 200;
 
         player.animations.play('run');
         if(player.scale.x<0){
-        	player.scale.x=-player.scale.x;
-        }
+           player.scale.x=-player.scale.x;
+       }
     }
-    else if(cursors.right.isUp && cursors.left.isUp)
+    else if(cursors.right.isUp && cursors.left.isUp && shootButton.isUp)
     {
-        //  Stand still
-        player.animations.play('idle');
+            //  Stand still
+            player.animations.play('idle');
     }
 
-    //console.log(this.state == 'idle');
-    
+   
+
     //  Allow the player to jump if they are touching the ground.
     if (jumpButton.isDown && player.body.touching.down)
     {
         player.body.velocity.y = -550;
+        player.animations.play('jump');
     }
 
     if(shootButton.isDown){
-    	player.animations.play('shoot');
+        player.animations.play('shoot');
+    }
+    
+    //console.log(player.body.velocity.y)
+    playerAnimator();
+}
+
+function playerAnimator() {
+
+    var marge = -50;
+    if (!player.body.touching.down)
+    {
+        if(player.body.velocity.y <= marge)
+        {
+            player.animations.play('jump_up');
+        }
+        else if(player.body.velocity.y > marge)
+        {
+            player.animations.play('jump_down');
+        }
+        
     }
 }
