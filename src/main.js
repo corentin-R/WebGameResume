@@ -1,11 +1,35 @@
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, false, false);
-
-
+var game 
 var player;
 var platforms;
 var cursors;
 var jumpButton;
+
+responsiveScreen();
+
+
+function responsiveScreen() {
+
+    //source du code pour la taille de la fenêtre: http://java.scripts-fr.com/scripts.php?js=23
+    /*var larg = (window.innerWidth);
+    var haut = (window.innerHeight);
+
+    var ratio = larg/haut;
+
+    console.log("Cette fenêtre fait " + larg + " de large et "+haut+" de haut, ratio= "+ratio);
+
+
+     if(larg/haut>2){
+       // scale = haut/hauteurBase; 
+        //largeurBase=larg/scale;
+        larg=2*haut;            
+    }
+    else if(larg/haut<0.5){
+        larg=0.5*haut; 
+    }*/
+
+    game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, false, false);
+}
 
 function preload() {
 
@@ -19,7 +43,7 @@ function create() {
 
 	//adaptative screen
 	//	  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
- game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 
     //  We're going to be using physics, so enable the Arcade Physics system
@@ -118,13 +142,17 @@ function playerController() {
            player.scale.x=-player.scale.x;
        }
     }
-    else if(cursors.right.isUp && cursors.left.isUp && shootButton.isUp)
+    else if(cursors.right.isUp && cursors.left.isUp && player.animations.name != 'shoot')
     {
             //  Stand still
             player.animations.play('idle');
     }
 
-   
+   if(player.animations.frame == 26)
+   {
+        player.animations.play('idle');
+        console.log(player.body.velocity.y)
+   }
 
     //  Allow the player to jump if they are touching the ground.
     if (jumpButton.isDown && player.body.touching.down)
@@ -137,14 +165,22 @@ function playerController() {
         player.animations.play('shoot');
     }
     
-    //console.log(player.body.velocity.y)
-    playerAnimator();
+    //on retourne en idle quand on fini le shoot
+    player.events.onAnimationComplete.add(playerEndShoot, 'shoot');
+
+    //charge le bon sprite en fction du vecteur y
+    playerJumpAnimator();
 }
 
-function playerAnimator() {
+function playerEndShoot() {
+    player.animations.play('idle');
+    //to do: tirer le projectile
+}
+
+function playerJumpAnimator() {
 
     var marge = -50;
-    if (!player.body.touching.down)
+    if (!player.body.touching.down && player.animations.name != 'shoot')
     {
         if(player.body.velocity.y <= marge)
         {
