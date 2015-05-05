@@ -1,11 +1,35 @@
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, false, false);
-
-
+var game 
 var player;
 var platforms;
 var cursors;
 var jumpButton;
+
+responsiveScreen();
+
+
+function responsiveScreen() {
+
+    //source du code pour la taille de la fenêtre: http://java.scripts-fr.com/scripts.php?js=23
+    /*var larg = (window.innerWidth);
+    var haut = (window.innerHeight);
+
+    var ratio = larg/haut;
+
+    console.log("Cette fenêtre fait " + larg + " de large et "+haut+" de haut, ratio= "+ratio);
+
+
+     if(larg/haut>2){
+       // scale = haut/hauteurBase; 
+        //largeurBase=larg/scale;
+        larg=2*haut;            
+    }
+    else if(larg/haut<0.5){
+        larg=0.5*haut; 
+    }*/
+
+    game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, false, false);
+}
 
 function preload() {
 
@@ -19,7 +43,7 @@ function create() {
 
 	//adaptative screen
 	//	  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
- game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 
     //  We're going to be using physics, so enable the Arcade Physics system
@@ -150,6 +174,7 @@ function playerController() {
 
 function playerEndShoot() {
     player.animations.play('idle');
+    //to do: tirer le projectile
 }
 
 function playerJumpAnimator() {
