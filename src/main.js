@@ -118,13 +118,17 @@ function playerController() {
            player.scale.x=-player.scale.x;
        }
     }
-    else if(cursors.right.isUp && cursors.left.isUp && shootButton.isUp)
+    else if(cursors.right.isUp && cursors.left.isUp && player.animations.name != 'shoot')
     {
             //  Stand still
             player.animations.play('idle');
     }
 
-   
+   if(player.animations.frame == 26)
+   {
+        player.animations.play('idle');
+        console.log(player.body.velocity.y)
+   }
 
     //  Allow the player to jump if they are touching the ground.
     if (jumpButton.isDown && player.body.touching.down)
@@ -137,14 +141,21 @@ function playerController() {
         player.animations.play('shoot');
     }
     
-    //console.log(player.body.velocity.y)
-    playerAnimator();
+    //on retourne en idle quand on fini le shoot
+    player.events.onAnimationComplete.add(playerEndShoot, 'shoot');
+
+    //charge le bon sprite en fction du vecteur y
+    playerJumpAnimator();
 }
 
-function playerAnimator() {
+function playerEndShoot() {
+    player.animations.play('idle');
+}
+
+function playerJumpAnimator() {
 
     var marge = -50;
-    if (!player.body.touching.down)
+    if (!player.body.touching.down && player.animations.name != 'shoot')
     {
         if(player.body.velocity.y <= marge)
         {
