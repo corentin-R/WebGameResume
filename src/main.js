@@ -1,11 +1,11 @@
 
-var game 
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render }, false, false);
 var player;
 var platforms;
 var cursors;
 var jumpButton;
 
-responsiveScreen();
+//responsiveScreen();
 
 
 function responsiveScreen() {
@@ -35,7 +35,7 @@ function preload() {
 
     game.load.image('sky', 'res/img/sky.png');
     game.load.image('ground', 'res/img/platform.png');
-    game.load.spritesheet('player1', 'res/img/hero.png', 16, 16);
+    game.load.spritesheet('player1', 'res/img/hero.png', 18, 16);
 
 }
 
@@ -76,7 +76,7 @@ function create() {
 
     // The player and its settings
     player = game.add.sprite(32, game.world.height - 150, 'player1');
-    player.scale.setTo(3,3);
+
 
     //set anchor in the middle to flip in the middle
     player.anchor.setTo(.5, 1);
@@ -85,12 +85,17 @@ function create() {
     game.physics.arcade.enable(player);
 
     //  Player physics properties. Give the little guy a slight bounce.
-    player.body.bounce.y = 0.1;
+    player.body.setSize(player.width/2, player.height, 0, 0);
+    // player.body.bounce.y = 0.08;
     player.body.gravity.y = 900;
     player.body.collideWorldBounds = true;
 
+    //  Attention scale after set body
+    player.scale.setTo(3,3);
+
+
     //  Our two animations, walking left and right.
-    player.animations.add('run', [6, 7, 8, 9, 10], 10, true);
+    player.animations.add('run', [6, 7, 8, 9, 10], 13, true);
     player.animations.add('idle', [0, 1, 2], 2, true);
     player.animations.add('jump', [12, 13, 14], 4, false);
     player.animations.add('shoot', [24, 25, 26], 8, false);
@@ -122,37 +127,38 @@ function playerController() {
 
 	this.state = 'idle';
 
-    if (cursors.left.isDown)
+    if (cursors.left.isDown && shootButton.isUp)
     {
-            //  Move to the left
-            player.body.velocity.x = -200;
+        //  Move to the left
+        player.body.velocity.x = -200;
 
-            player.animations.play('run');
-            if(player.scale.x>0){
-               player.scale.x=-player.scale.x;
-           }
-       }
-       else if (cursors.right.isDown)
-       {
+        player.animations.play('run');
+        if(player.scale.x>0)
+        {
+            player.scale.x=-player.scale.x;
+        }
+    }
+    else if (cursors.right.isDown && shootButton.isUp)
+    {
         //  Move to the right
         player.body.velocity.x = 200;
 
         player.animations.play('run');
         if(player.scale.x<0){
-           player.scale.x=-player.scale.x;
-       }
-    }
-    else if(cursors.right.isUp && cursors.left.isUp && player.animations.name != 'shoot')
-    {
+         player.scale.x=-player.scale.x;
+        }
+     }
+     else if(cursors.right.isUp && cursors.left.isUp && player.animations.name != 'shoot')
+     {
             //  Stand still
             player.animations.play('idle');
-    }
+        }
 
-   if(player.animations.frame == 26)
-   {
-        player.animations.play('idle');
-        console.log(player.body.velocity.y)
-   }
+        if(player.animations.frame == 26)
+        {
+            player.animations.play('idle');
+            console.log(player.body.velocity.y)
+        }
 
     //  Allow the player to jump if they are touching the ground.
     if (jumpButton.isDown && player.body.touching.down)
@@ -163,6 +169,7 @@ function playerController() {
 
     if(shootButton.isDown){
         player.animations.play('shoot');
+
     }
     
     //on retourne en idle quand on fini le shoot
@@ -192,4 +199,11 @@ function playerJumpAnimator() {
         }
         
     }
+}
+
+
+function render() {
+
+    game.debug.body(player);
+
 }
