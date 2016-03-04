@@ -22,7 +22,9 @@ const DEBUG = false;
 
 function create() {
 
-	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;;
+
+	Phaser.Canvas.setImageRenderingCrisp(this.game.renderer.view);
+	//game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;;
 
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
