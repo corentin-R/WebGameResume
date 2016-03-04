@@ -1,101 +1,73 @@
-
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render }, false, false);
-var player;
-var platforms;
-var cursors;
-var jumpButton;
-
-//responsiveScreen();
-
-
-function responsiveScreen() {
-
-    //source du code pour la taille de la fenêtre: http://java.scripts-fr.com/scripts.php?js=23
-    /*var larg = (window.innerWidth);
-    var haut = (window.innerHeight);
-
-    var ratio = larg/haut;
-
-    console.log("Cette fenêtre fait " + larg + " de large et "+haut+" de haut, ratio= "+ratio);
-
-
-     if(larg/haut>2){
-       // scale = haut/hauteurBase; 
-        //largeurBase=larg/scale;
-        larg=2*haut;            
-    }
-    else if(larg/haut<0.5){
-        larg=0.5*haut; 
-    }*/
-
-    game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update }, false, false);
-}
+var game = new Phaser.Game(500, 250, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render }, null, null);
 
 function preload() {
 
-    game.load.image('sky', 'res/img/sky.png');
-    game.load.image('ground', 'res/img/platform.png');
-    game.load.spritesheet('player1', 'res/img/hero.png', 18, 16);
+    game.load.tilemap('mario', 'res/tilemaps/super_mario.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'res/tiles/super_mario.png');
+    game.load.spritesheet('player', 'res/img/hero.png', 18, 16);
+
 
 }
 
+var map;
+var tileset;
+var layer;
+var player;
+var cursors;
+var jumpButton;
+
+const HORIZONTAL_SPEED = 100;
+const VERICAL_SPEED = -250;
+const DEBUG = false;
+
 function create() {
 
-	//adaptative screen
-	//	  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;;
 
 
-    //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //  A simple background for our game
-    game.add.sprite(0, 0, 'sky');
+    game.stage.backgroundColor = '#787878';
 
-    //  The platforms group contains the ground and the 2 ledges we can jump on
-    platforms = game.add.group();
+    map = game.add.tilemap('mario');
 
-    //  We will enable physics for any object that is created in this group
-    platforms.enableBody = true;
-
-    // Here we create the ground.
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
-
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    ground.scale.setTo(2, 2);
-
-    //  This stops it from falling away when you jump on it
-    ground.body.immovable = true;
-
-    //  Now let's create two ledges
-    var ledge = platforms.create(400, 400, 'ground');
-    ledge.body.immovable = true;
-
-    ledge = platforms.create(-150, 250, 'ground');
-    ledge.body.immovable = true;
-
-    // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'player1');
+    map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
 
 
-    //set anchor in the middle to flip in the middle
-    player.anchor.setTo(.5, 1);
 
-    //  We need to enable physics on the player
-    game.physics.arcade.enable(player);
+    //  14 = ? block
+    map.setCollisionBetween(14, 15);
+    map.setCollisionBetween(15, 16);
+    map.setCollisionBetween(20, 25);
+    map.setCollisionBetween(27, 29);
+    map.setCollision(40);
+    
+    layer = map.createLayer('World1');
+    
+    //layer.scale.set(1.5,1.5);
+     layer.resizeWorld();
 
-    //  Player physics properties. Give the little guy a slight bounce.
-    player.body.setSize(player.width/2, player.height, 0, 0);
-    // player.body.bounce.y = 0.08;
-    player.body.gravity.y = 900;
+    //  Un-comment this on to see the collision tiles
+    if(DEBUG)
+    	layer.debug = true;
+
+    player = game.add.sprite(100, 100, 'player');
+    player.smoothed = false;
+
+
+    game.physics.enable(player);
+	game.physics.arcade.gravity.y = 250;
+	
+	player.body.setSize(player.width/2, player.height, 0, 0);
+    player.body.gravity.y = 200;
+    player.body.linearDamping = 1;
     player.body.collideWorldBounds = true;
 
-    //  Attention scale after set body
-    player.scale.setTo(3,3);
+    // set anchor in the middle to flip in the middle
+    player.anchor.setTo(.5, 1);
 
-
-    //  Our two animations, walking left and right.
-    player.animations.add('run', [6, 7, 8, 9, 10], 13, true);
+    // Our animations, walking left and right.
+    player.animations.add('run', [6, 7, 8, 9, 10], 25, true);
     player.animations.add('idle', [0, 1, 2], 2, true);
     player.animations.add('jump', [12, 13, 14], 4, false);
     player.animations.add('shoot', [24, 25, 26], 8, false);
@@ -103,24 +75,27 @@ function create() {
     player.animations.add('jump_down', [13], 4, false);
     player.animations.add('jump_fall', [14], 4, false);
 
-    //  Our controls.
+    // Attention scale after set body
+    //player.scale.setTo(1.4,1.4);
+
+
+    game.camera.follow(player);
+
+    // Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     shootButton = game.input.keyboard.addKey(Phaser.Keyboard.V);
+
 }
 
-//game loop
 function update() {
 
-    //  Collide the player and the stars with the platforms
-    game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(player, layer);
 
-    //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
     playerController();
 
-    //game.debug.body(player);
 }
 
 function playerController() {
@@ -130,7 +105,7 @@ function playerController() {
     if (cursors.left.isDown && shootButton.isUp)
     {
         //  Move to the left
-        player.body.velocity.x = -200;
+        player.body.velocity.x = -1*HORIZONTAL_SPEED;
 
         player.animations.play('run');
         if(player.scale.x>0)
@@ -141,7 +116,7 @@ function playerController() {
     else if (cursors.right.isDown && shootButton.isUp)
     {
         //  Move to the right
-        player.body.velocity.x = 200;
+        player.body.velocity.x = HORIZONTAL_SPEED;
 
         player.animations.play('run');
         if(player.scale.x<0){
@@ -161,9 +136,9 @@ function playerController() {
         }
 
     //  Allow the player to jump if they are touching the ground.
-    if (jumpButton.isDown && player.body.touching.down)
+    if (jumpButton.isDown && player.body.blocked.down)
     {
-        player.body.velocity.y = -550;
+        player.body.velocity.y = VERICAL_SPEED;
         player.animations.play('jump');
     }
 
@@ -176,7 +151,7 @@ function playerController() {
     player.events.onAnimationComplete.add(playerEndShoot, 'shoot');
 
     //charge le bon sprite en fction du vecteur y
-    playerJumpAnimator();
+   playerJumpAnimator();
 }
 
 function playerEndShoot() {
@@ -186,8 +161,9 @@ function playerEndShoot() {
 
 function playerJumpAnimator() {
 
-    var marge = -50;
-    if (!player.body.touching.down && player.animations.name != 'shoot')
+    var marge = 30;
+        	
+   if (!player.body.blocked.down && player.animations.name != 'shoot')
     {
         if(player.body.velocity.y <= marge)
         {
@@ -202,8 +178,10 @@ function playerJumpAnimator() {
 }
 
 
-function render() {
 
-    game.debug.body(player);
+function render() {
+	
+	if(DEBUG)
+    	game.debug.body(player);
 
 }
