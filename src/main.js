@@ -1,10 +1,12 @@
-var game = new Phaser.Game(500, 250, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render }, null, null);
+var game = new Phaser.Game(320, 288, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render }, null, null);
 
 function preload() {
 
-    game.load.tilemap('mario', 'res/tilemaps/super_mario.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'res/tiles/super_mario.png');
+    game.load.tilemap('mario', 'res/tilemaps/world1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'res/tiles/tilemap1.png');
     game.load.spritesheet('player', 'res/img/hero.png', 18, 16);
+
+	game.load.image('background', 'res/img/background_xl.png');
 
 
 }
@@ -29,6 +31,11 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        //  A simple background for our game
+    bg = game.add.tileSprite(0, 0, 800, 600, 'background');
+    bg.fixedToCamera = true;
+    //background = game.add.sprite(10, 10, 'sky');
+
     game.stage.backgroundColor = '#787878';
 
     map = game.add.tilemap('mario');
@@ -38,11 +45,17 @@ function create() {
 
 
     //  14 = ? block
-    map.setCollisionBetween(14, 15);
+   	/*map.setCollisionBetween(14, 15);
     map.setCollisionBetween(15, 16);
     map.setCollisionBetween(20, 25);
-    map.setCollisionBetween(27, 29);
-    map.setCollision(40);
+    map.setCollisionBetween(27, 29);*/
+
+    map.setCollision(10);
+    map.setCollision(11);
+    map.setCollision(12);
+    map.setCollision(13);
+    map.setCollision(14);
+    map.setCollision(15);
     
     layer = map.createLayer('World1');
     
