@@ -1,10 +1,14 @@
 EPT.Preloader = function(game) {};
+
+var scale = 0.4;
+
 EPT.Preloader.prototype = {
 	preload: function() {
 		var preloadBG = this.add.sprite((this.world.width-580)*0.5, (this.world.height+150)*0.5, 'loading-background');
-		var preloadProgress = this.add.sprite((this.world.width-540)*0.5, (this.world.height+170)*0.5, 'loading-progress');
+		var preloadProgress = this.add.sprite((this.world.width-300)*0.5, (this.world.height+100)*0.5, 'loading-progress');
+		//		preloadProgress.scale.setTo(scale, scale);
 		this.load.setPreloadSprite(preloadProgress);
-		
+
 		this._preloadResources();
 	},
 	_preloadResources() {

@@ -140,16 +140,16 @@ EPT.Game.prototype = {
 
 		this.screenPausedGroup = this.add.group();
 		this.screenPausedBg = this.add.sprite(0, 0, 'overlay');
-		this.screenPausedText = this.add.text(this.world.width*0.5, 100, 'Paused', fontTitle);
+		this.screenPausedText = this.add.text(game.camera.width*0.5, 100, 'Paused', fontTitle);
 		this.screenPausedText.scale.setTo(scale, scale);
 		this.screenPausedText.anchor.set(0.5,0);
-		this.buttonAudio = this.add.button(this.world.width-20, 20, 'button-audio', this.clickAudio, this, 1, 0, 2);
+		this.buttonAudio = this.add.button(game.camera.width-20, 40, 'button-audio', this.clickAudio, this, 1, 0, 2);
 		this.buttonAudio.anchor.set(1,0);
 		this.buttonAudio.scale.setTo(scale, scale);
-		this.screenPausedBack = this.add.button(150, this.world.height-100, 'button-mainmenu', this.stateBack, this, 1, 0, 2);
+		this.screenPausedBack = this.add.button(75, game.camera.height-70, 'button-mainmenu', this.stateBack, this, 1, 0, 2);
 		this.screenPausedBack.anchor.set(0,1);
 		this.screenPausedBack.scale.setTo(scale, scale);
-		this.screenPausedContinue = this.add.button(this.world.width-150, this.world.height-100, 'button-continue', this.managePause, this, 1, 0, 2);
+		this.screenPausedContinue = this.add.button(game.camera.width-75, game.camera.height-70, 'button-continue', this.managePause, this, 1, 0, 2);
 		this.screenPausedContinue.anchor.set(1,1);
 		this.screenPausedContinue.scale.setTo(scale, scale);
 		this.screenPausedGroup.add(this.screenPausedBg);
@@ -163,13 +163,13 @@ EPT.Game.prototype = {
 
 		this.screenGameoverGroup = this.add.group();
 		this.screenGameoverBg = this.add.sprite(0, 0, 'overlay');
-		this.screenGameoverText = this.add.text(this.world.width*0.5, 100, 'Game over', fontTitle);
+		this.screenGameoverText = this.add.text(game.camera.width*0.5, 100, 'Game over', fontTitle);
 		this.screenGameoverText.anchor.set(0.5,0);
-		this.screenGameoverBack = this.add.button(150, this.world.height-100, 'button-mainmenu', this.stateBack, this, 1, 0, 2);
+		this.screenGameoverBack = this.add.button(150, game.camera.height-100, 'button-mainmenu', this.stateBack, this, 1, 0, 2);
 		this.screenGameoverBack.anchor.set(0,1);
-		this.screenGameoverRestart = this.add.button(this.world.width-150, this.world.height-100, 'button-restart', this.stateRestart, this, 1, 0, 2);
+		this.screenGameoverRestart = this.add.button(game.camera.width-150, game.camera.height-100, 'button-restart', this.stateRestart, this, 1, 0, 2);
 		this.screenGameoverRestart.anchor.set(1,1);
-		this.screenGameoverScore = this.add.text(this.world.width*0.5, 300, 'Score: '+this._score, fontScoreWhite);
+		this.screenGameoverScore = this.add.text(game.camera.width*0.5, 300, 'Score: '+this._score, fontScoreWhite);
 		this.screenGameoverScore.anchor.set(0.5,0.5);
 		this.screenGameoverGroup.add(this.screenGameoverBg);
 		this.screenGameoverGroup.add(this.screenGameoverText);
@@ -240,8 +240,8 @@ EPT.Game.prototype = {
 	addPoints: function() {
 		this._score += 10;
 		this.textScore.setText('Score: '+this._score);
-		var randX = this.rnd.integerInRange(200,this.world.width-200);
-		var randY = this.rnd.integerInRange(200,this.world.height-200);
+		var randX = this.rnd.integerInRange(200,game.camera.width-200);
+		var randY = this.rnd.integerInRange(200,game.camera.height-200);
 		var pointsAdded = this.add.text(randX, randY, '+10',
 			{ font: "48px Arial", fill: "#000", stroke: "#FFF", strokeThickness: 10 });
 		pointsAdded.anchor.set(0.5, 0.5);

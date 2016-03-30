@@ -1,22 +1,21 @@
-# Webgame
+# Enclave Phaser Template
 
-## Description
+Fully mobile responsive, portrait and landscape compatible template for **HTML5 games** written using the [Phaser](http://phaser.io/) game engine. See it online at: [http://enclavegames.github.io/Enclave-Phaser-Template/](http://enclavegames.github.io/Enclave-Phaser-Template/)
 
-A small html5 plateformer game made with [Phaser](http://phaser.io/).
+![Enclave Phaser Template](https://enclavegames.github.io/Enclave-Phaser-Template/img/enclave-phaser-template.png)
 
-## Controls
+It is my own point of view on building a structure for HTML5 games. If you think something can be done better feel free to send the pull request.
 
-* On desktop devices
-	* Arrows key to move
-	* Space bar to jump
+### Features:
 
+- fully responsive
+- main menu with buttons
+- story and achievements screens
+- audio management
+- highscore management
+- paused and game over states
 
-## Credits
+### Todo:
 
-### Graphics assets
-
-* [Jason-Em](http://opengameart.org/users/jason-em)
-
-### Game template
-
-* [Enclave-Phaser-Template](https://github.com/EnclaveGames/Enclave-Phaser-Template)
+- storage as a Phaser plugin
+- intro tutorial
